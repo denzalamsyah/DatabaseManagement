@@ -1,0 +1,91 @@
+package main
+
+// connector @krisna
+func Connnect() (db, error) {
+  db, err := sql.Open("postgres","host=localhost port=5432 username=postgres password=postgres database=replit")
+  if err != nil {
+    panic(err)
+  }
+  defer db.Close()
+}
+
+// struct @rizwan
+type employes struct{
+  ID int `sql:"id"`
+  Name string `sql:"name"`
+  City string `sql:"city"`
+}
+
+func main() {
+  db, err := Connect()
+  if err != nil {
+    panic(err)
+  }
+
+  create(db)
+  resp, _ := select(db)
+  fmt.Println(resp)
+
+  update(db)
+  resp, _ := select(db)
+  fmt.Println(resp)
+
+  delete(db)
+  resp, _ := select(db)
+  fmt.Println(resp)
+}
+
+// create @ reynanda  lagi makan bang, bentar lagi selesai
+func create(db *sql.DB) error {
+  createTableQuery := `CREATE TABLE employees (id, name, city);`
+
+  _, err := db.Exec(createTableQuery)
+  if err != nil {
+    log.Fatal(err)
+  }
+  // fmt.Println("Table OK")
+  return nil
+} 
+
+// update @Anam
+func update(db *sql.DB) error {
+  sql := "UPDATE employees SET name = 'Razoub', city = 'Surabaya' WHERE id = 1"
+
+  _, err := db.Exec(sql)
+  if err != nil {
+    return err
+  }
+
+  return nil
+} 
+
+// delete @prami
+func delete(db *sql.DB) error {
+  deleteQuery := "DELETE FROM employees WHERE id = 1"
+
+  -, err = db.Exec(sql)
+  if err != nil {
+    fmt.Println(err)
+    return nil
+  }
+
+} 
+
+// select @rizwan
+func select(db *sql.DB) ([]employes, error){
+   rows, err := db.Query("SELECT * FROM employes")
+    if err != nil {
+        return nil, err
+    }
+   var listEmployee []employes
+    for rows.Next() {
+        var employee employes
+      err := rows.Scan(&employee.ID, &employee.Name, employee.City)
+        if err != nil {
+            return nil, err
+        }
+       listEmployee = append(listEmployee, employee)
+      }
+  
+  return listEmployee, nil
+}
